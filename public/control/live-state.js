@@ -65,33 +65,53 @@ function updateUiState(state) {
     revealCurrentCard(document.getElementById(id), matches, state.currentSlideIndex);
   }
 
-  // Sincronizar IP local de red si viene en el estado
-  if (state.networkInfo && state.networkInfo.localIp) {
-    updateNetworkIpDisplay(state.networkInfo.localIp);
-  }
 }
 
 // ==============================================================
 // GESTIÓN DE IP LOCAL Y ENLACE DE CONEXIÓN
 // ==============================================================
-async function updateNetworkIpDisplay(ipFromServer) {
+async function updateNetworkIpDisplay(ipFromServer, refresh = !ipFromServer) {
   let ip = ipFromServer;
-  if (!ip) {
+  let urls;
+  let port = window.location.port || '4000';
+  if (refresh) {
     try {
       const res = await request('/api/ip');
       const data = await res.json();
       ip = data.ip;
+      port = data.port || port;
+      urls = data;
     } catch (_) {
       ip = window.location.hostname;
     }
   }
-  const port = window.location.port || '4000';
-  const fullDisplay = ip ? `${ip}:${port}` : window.location.host;
+  const localOnly = !ip || ip === 'localhost' || ip === '127.0.0.1';
+  const fullDisplay = localOnly ? 'Sin IP de red local' : (urls?.controlUrl ? new URL(urls.controlUrl).host : `${ip}:${port}`);
+  const screenUrl = document.getElementById('transmissionScreenUrl');
+  const overlayUrl = document.getElementById('transmissionOverlayUrl');
+  if (screenUrl) screenUrl.textContent = localOnly ? 'Conecta la PC a una red local para obtener la dirección.' : (urls?.pantallaUrl || `http://${fullDisplay}/pantalla`);
+  if (overlayUrl) overlayUrl.textContent = localOnly ? 'Conecta la PC a una red local para obtener la dirección.' : (urls?.overlayUrl || `http://${fullDisplay}/overlay`);
   const headerEl = document.getElementById('header-ip-address');
   if (headerEl) headerEl.textContent = fullDisplay;
   const monEl = document.getElementById('monitor-ip-text');
   if (monEl) monEl.textContent = ip || window.location.hostname;
 }
+
+window.addEventListener('wifi-tab-activated', () => { void updateNetworkIpDisplay(undefined, true); });
+
+document.addEventListener('click', async event => {
+  const button = event.target.closest('[data-copy-url]');
+  if (!button) return;
+  const value = document.getElementById(button.dataset.copyUrl)?.textContent;
+  if (!value || value.includes('Calculando')) return;
+  try {
+    await navigator.clipboard.writeText(value);
+    const previous = button.textContent; button.textContent = 'Copiado';
+    setTimeout(() => { button.textContent = previous; }, 1400);
+  } catch {
+    window.prompt('Copia esta dirección:', value);
+  }
+});
 
 
 

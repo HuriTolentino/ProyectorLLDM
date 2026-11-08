@@ -4,7 +4,7 @@ const profile = {
   background: 'original', backgroundColor: '#101f38',
   lineGap: 3, textShadow: true
 };
-const bible = { color: '#ffffff', indicatorColor: '#cc9900', textShadow: true };
+const bible = { color: '#ffffff', indicatorColor: '#cc9900', textShadow: true, background: 'original', backgroundColor: '#101f38' };
 const lyricsDefaults = { hymn: { ...profile }, choir: { ...profile }, bible };
 const isColor = value => typeof value === 'string' && /^#[a-f0-9]{6}$/i.test(value);
 function validateLyrics(input = lyricsDefaults) {
@@ -26,10 +26,13 @@ function validateLyrics(input = lyricsDefaults) {
     if (typeof normalized.textShadow !== 'boolean') throw new Error('La sombra del texto debe estar activada o desactivada.');
     output[type] = normalized;
   }
-  const bibleStyle = input.bible === undefined ? bible : input.bible;
-  if (!bibleStyle || Object.keys(bibleStyle).some(key => !Object.hasOwn(bible, key)) ||
-      !isColor(bibleStyle.color) || !isColor(bibleStyle.indicatorColor) || typeof bibleStyle.textShadow !== 'boolean') throw new Error('Ajustes de Biblia no válidos.');
-  output.bible = { ...bibleStyle };
+  const savedBibleStyle = input.bible === undefined ? {} : input.bible;
+  if (!savedBibleStyle || typeof savedBibleStyle !== 'object' || Array.isArray(savedBibleStyle) || Object.keys(savedBibleStyle).some(key => !Object.hasOwn(bible, key))) throw new Error('Ajustes de Biblia no válidos.');
+  const bibleStyle = { ...bible, ...savedBibleStyle };
+  if (
+      !isColor(bibleStyle.color) || !isColor(bibleStyle.indicatorColor) || typeof bibleStyle.textShadow !== 'boolean' ||
+      !isColor(bibleStyle.backgroundColor) || !/^(original|solid|preset-(navy|burgundy|emerald|slate)|image-[a-f0-9]{24})$/.test(bibleStyle.background)) throw new Error('Ajustes de Biblia no válidos.');
+  output.bible = { ...bible, ...bibleStyle };
   return output;
 }
 module.exports = { lyricsDefaults, validateLyrics };

@@ -688,7 +688,7 @@
             <div><h2 class="tv-monitor-title">Salida a TV</h2></div>
           </div>
           <div style="display: flex; align-items: center; gap: 6px;">
-                        <div id="monitor-status-badge" class="status-badge status-idle" style="padding: 2px 6px; font-size: 11px;">
+                        <div id="monitor-status-badge" class="status-badge status-idle" style="padding: 7px 10px; font-size: 11px;">
               <span class="status-dot"></span>
               <span id="monitor-status-text">REPOSO</span>
             </div>
@@ -935,7 +935,7 @@
       <div class="settings-header">      <div class="settings-heading"><h2 id="settingsTitle">Ajustes</h2><button type="button" id="closeSettings" class="btn-modal-close" aria-label="Cerrar ajustes">×</button></div>
       <p class="settings-credits">Proyector LLDM<br>Desarrollado por <strong>Huri Tolentino</strong></p>
 </div>
-      <nav class="settings-tabs" role="tablist" aria-label="Secciones de ajustes"><button type="button" role="tab" id="settings-tab-church" aria-controls="settings-panel-church" aria-selected="true" tabindex="0" data-settings-section="church">Iglesia</button><button type="button" role="tab" id="settings-tab-lyrics" aria-controls="settings-panel-lyrics" aria-selected="false" tabindex="-1" data-settings-section="lyrics">Letras</button><button type="button" role="tab" id="settings-tab-background" aria-controls="settings-panel-background" aria-selected="false" tabindex="-1" data-settings-section="background">Fondo de TV</button><button type="button" role="tab" id="settings-tab-obs" aria-controls="settings-panel-obs" aria-selected="false" tabindex="-1" data-settings-section="obs">OBS</button><button type="button" role="tab" id="settings-tab-keyboard" aria-controls="settings-panel-keyboard" aria-selected="false" tabindex="-1" data-settings-section="keyboard">Teclado</button><button type="button" role="tab" id="settings-tab-wifi" aria-controls="settings-panel-wifi" aria-selected="false" tabindex="-1" data-settings-section="wifi">Wi-Fi</button><button type="button" role="tab" id="settings-tab-advanced" aria-controls="settings-panel-advanced" aria-selected="false" tabindex="-1" data-settings-section="advanced">Avanzado</button></nav>
+      <nav class="settings-tabs" role="tablist" aria-label="Secciones de ajustes"><button type="button" role="tab" id="settings-tab-church" aria-controls="settings-panel-church" aria-selected="true" tabindex="0" data-settings-section="church">Iglesia</button><button type="button" role="tab" id="settings-tab-lyrics" aria-controls="settings-panel-lyrics" aria-selected="false" tabindex="-1" data-settings-section="lyrics">Letras</button><button type="button" role="tab" id="settings-tab-background" aria-controls="settings-panel-background" aria-selected="false" tabindex="-1" data-settings-section="background">Fondo de TV</button><button type="button" role="tab" id="settings-tab-obs" aria-controls="settings-panel-obs" aria-selected="false" tabindex="-1" data-settings-section="obs">OBS</button><button type="button" role="tab" id="settings-tab-keyboard" aria-controls="settings-panel-keyboard" aria-selected="false" tabindex="-1" data-settings-section="keyboard">Teclado</button><button type="button" role="tab" id="settings-tab-wifi" aria-controls="settings-panel-wifi" aria-selected="false" tabindex="-1" data-settings-section="wifi">Conexión</button><button type="button" role="tab" id="settings-tab-advanced" aria-controls="settings-panel-advanced" aria-selected="false" tabindex="-1" data-settings-section="advanced">Avanzado</button></nav>
       <div class="settings-body" id="settingsBody"><section role="tabpanel" id="settings-panel-church" aria-labelledby="settings-tab-church" data-settings-panel="church">      <fieldset class="settings-section"><legend>Datos de la iglesia</legend>
         <p class="settings-church-name">La Luz del Mundo</p>
         <label>Colonia o dirección<input id="churchAddress" name="churchAddress" type="text" maxlength="160" autocomplete="street-address"></label>
@@ -991,7 +991,13 @@
         <div id="settingsControls"></div>
         <button type="button" id="resetControls" class="btn-secondary">Restablecer controles</button>
       </fieldset></section>
-<section role="tabpanel" id="settings-panel-wifi" aria-labelledby="settings-tab-wifi" data-settings-panel="wifi" hidden>      <fieldset class="settings-section"><legend>Conexión Wi-Fi para celulares (QR)</legend>
+<section role="tabpanel" id="settings-panel-wifi" aria-labelledby="settings-tab-wifi" data-settings-panel="wifi" hidden>
+        <fieldset class="settings-section"><legend>Conectar una PC de transmisión</legend>
+          <p class="settings-note">Conecta ambas computadoras a la misma red. En la PC de transmisión abre una de estas direcciones. Si Windows pregunta, permite el acceso en redes privadas:</p>
+          <div class="network-output-link"><span>Pantallas / OBS</span><code id="transmissionScreenUrl">Calculando dirección…</code><button type="button" class="btn-secondary" data-copy-url="transmissionScreenUrl">Copiar</button></div>
+          <div class="network-output-link"><span>Cámaras / banners OBS</span><code id="transmissionOverlayUrl">Calculando dirección…</code><button type="button" class="btn-secondary" data-copy-url="transmissionOverlayUrl">Copiar</button></div>
+        </fieldset>
+      <fieldset class="settings-section"><legend>Conexión Wi-Fi para celulares (QR)</legend>
         <div class="wifi-guide-card">
           <div class="wifi-guide-steps">
             <div class="wifi-step">
@@ -1030,7 +1036,7 @@
           <button type="button" id="revokeMobileSessions" class="btn-danger">Desconectar todos</button>
         </div>
         <div class="wifi-qr-card">
-          <img id="mobileQrImage" alt="QR para conectar un celular a esta cabina" width="240" height="240" style="background: #ffffff; padding: 12px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); object-fit: contain;" hidden>
+          <img id="mobileQrImage" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="QR para conectar un celular a esta cabina" width="240" height="240" style="background: #ffffff; padding: 12px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); object-fit: contain;" hidden>
           <p id="mobileQrStatus" class="settings-message" role="status" style="font-weight: 700; font-size: 14px; text-align: center; color: var(--gold-light, #f1d58c); margin: 0;"></p>
         </div>
         <div style="margin-top: 24px; border-top: 1px solid #304156; padding-top: 18px;">

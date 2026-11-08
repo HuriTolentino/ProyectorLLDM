@@ -20,7 +20,10 @@ function renderFields() {
   navigation.hidden = isBible;
   document.getElementById('lyricsPreviewLabel').textContent = isBible ? 'Formato para previsualizar' : 'Canto para previsualizar';
   fields.innerHTML = `<label>Aplicar a<select id="lyricsAppearanceType">${option('hymn','Himnario',type)}${option('choir','Coro',type)}${option('bible','Biblia',type)}</select></label>`
-    + (isBible ? `<fieldset class="lyrics-control-group"><legend>Colores de la Biblia</legend><div class="lyrics-color-fields bible-color-fields">
+    + (isBible ? `<fieldset class="lyrics-control-group"><legend>Fondo de la Biblia</legend><div class="lyrics-background-fields"><label>Fondo de las citas<select data-lyrics-field="background">${option('original','Fondo predeterminado',value.background)}${option('solid','Color liso',value.background)}${assets.filter(a=>a.kind==='image').map(a=>option(a.id,a.name,value.background)).join('')}</select></label>
+      ${colorField('backgroundColor', 'Color de fondo', value.backgroundColor)}</div>
+      <div class="song-upload-actions"><label class="song-file-button">Agregar fondo a Biblia<input id="bibleBackgroundUpload" type="file" accept="image/png,image/jpeg,image/webp"></label></div></fieldset>
+      <fieldset class="lyrics-control-group"><legend>Colores de la Biblia</legend><div class="lyrics-color-fields bible-color-fields">
       ${colorField('color', 'Texto', value.color)}
       ${colorField('indicatorColor', 'Cita y versículos', value.indicatorColor)}
     </div></fieldset>` : `<fieldset class="lyrics-control-group"><legend>Distribución y tamaño</legend><div class="lyrics-sizing-fields">
@@ -121,6 +124,12 @@ for(const [id,kind,key] of [['songFontUpload','font','font'],['songBackgroundUpl
     catch(error){message.textContent=error.message;}finally{input.disabled=false;input.value='';}
   });
 }
+document.getElementById('lyricsAppearanceFields').addEventListener('change', event => {
+  if (event.target.id !== 'bibleBackgroundUpload') return;
+  const input=event.target,file=input.files[0];if(!file||!draft)return;
+  const targetDraft=draft;const data=new FormData();data.append('file',file);input.disabled=true;message.textContent='Importando fondo de Biblia…';
+  void (async()=>{try{const asset=await(await request('/api/song-assets/image',{method:'POST',body:data})).json();if(draft!==targetDraft)return;assets=await(await request('/api/song-assets')).json();if(draft!==targetDraft)return;targetDraft.lyrics.bible.background=asset.id;renderFields();await updatePreview();message.textContent=`Fondo «${asset.name}» listo. Pulsa Guardar para aplicarlo en las TV.`;}catch(error){message.textContent=error.message;}finally{input.disabled=false;input.value='';}})();
+});
 export async function openLyricsAppearance(settings, original) {
   draft=settings;defaults=original.lyrics;type='hymn';assets=await(await request('/api/song-assets')).json();
   renderFields();frame.src='/pantalla?lyricsPreview=1';await loadSongs();

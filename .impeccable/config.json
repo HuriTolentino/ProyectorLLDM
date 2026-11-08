@@ -1,0 +1,23 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "public/control.html"
+        ],
+        "createdAt": "2026-11-08T06:15:39.416Z",
+        "reason": "Agent: reviewed all current matches; card headings lose their border in workspace.css, the dialog children are independently inset, and settings fieldsets have no visible border."
+      },
+      {
+        "rule": "overused-font",
+        "value": "montserrat",
+        "createdAt": "2026-11-08T06:15:40.320Z",
+        "reason": "Agent: Montserrat is the approved cabina typeface in DESIGN.md and is used consistently across controls."
+      }
+    ]
+  }
+}

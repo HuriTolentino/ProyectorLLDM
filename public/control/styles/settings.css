@@ -5,7 +5,7 @@
 .settings-dialog form { padding: 0; height: min(900px, calc(100dvh - 28px)); max-height: calc(100dvh - 28px); display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 0; min-width: 0; }
 .settings-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .settings-heading h2 { margin: 0; font-size: 22px; }
-.settings-section { border: 0; padding: 0; min-width: 0; display: grid; gap: 12px; }
+.settings-section { border: 0; padding: 8px 0; min-width: 0; display: grid; gap: 12px; }
 .settings-section legend { padding: 0 0 12px; color: #edf3fb; font-size: 16px; font-weight: 650; }
 .settings-section label { display: grid; gap: 6px; font-size: 13px; }
 .settings-section input { width: 100%; box-sizing: border-box; padding: 12px; border: 1px solid #45566d; border-radius: 7px; color: #fff; background: #0e1724; font: inherit; }
@@ -157,6 +157,11 @@
   border-radius: 12px;
   min-height: 120px;
 }
+.network-output-link { display:grid; grid-template-columns:minmax(130px, 1fr) minmax(0, 2fr) auto; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid #304156; }
+.network-output-link:last-child { border-bottom:0; }
+.network-output-link code { min-width:0; overflow-wrap:anywhere; color:#f2d58f; font:600 13px/1.5 ui-monospace,Consolas,monospace; }
+.network-output-link .btn-secondary { min-height:40px; padding:8px 14px; }
+@media (max-width:600px) { .network-output-link { grid-template-columns:minmax(0,1fr) auto; } .network-output-link span { grid-column:1/-1; } }
 .mobile-sessions-list {
   list-style: none;
   padding: 0;

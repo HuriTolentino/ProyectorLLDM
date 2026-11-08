@@ -69,11 +69,18 @@ function createSongAssets({ app, dataDir }) {
       if (!find(value.font, 'font')) throw new Error('La fuente seleccionada no está disponible.');
       if (!['original', 'solid', 'transparent'].includes(value.background) && !find(value.background, 'image')) throw new Error('El fondo seleccionado no está disponible.');
     }
+    if (/^(?:image-|preset-)/.test(lyrics.bible.background) && !find(lyrics.bible.background, 'image')) throw new Error('El fondo de Biblia seleccionado no está disponible.');
     if (graphics && !['institutional', 'classic', 'transparent'].includes(graphics.background)) {
       if (!find(graphics.background, 'background')) throw new Error('El fondo de TV seleccionado no está disponible.');
     }
   }
   app.get('/api/song-assets', (req, res) => res.json(all().map(({ file, filename, ...asset }) => asset)));
+  app.get('/display-assets/bible-background/:id', (req, res) => {
+    if (!/^(?:image-[a-f\d]{24}|preset-(?:navy|burgundy|emerald|slate))$/.test(req.params.id)) return res.sendStatus(404);
+    const asset = find(req.params.id, 'image');
+    if (!asset) return res.sendStatus(404);
+    res.set('Cache-Control', 'no-store').json({ url: asset.url });
+  });
   app.get('/song-assets/:filename', (req, res) => {
     const asset = imported.find(value => value.filename === req.params.filename || value.id === req.params.filename);
     if (!asset) return res.sendStatus(404);

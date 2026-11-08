@@ -4,6 +4,16 @@ const lite = new URLSearchParams(location.search).get('lite') === '1';
 if (!lyricsPreview) document.getElementById('idle-frame').src = lite ? '/idle.html?lite=1' : '/idle.html';
 const songFonts = new Map();
 const songBackgrounds = new Map();
+const bibleBackgroundUrls = new Map();
+async function resolveBibleBackground(style) {
+  if (!/^(?:image-|preset-)/.test(style?.background || '')) return '';
+  if (bibleBackgroundUrls.has(style.background)) return bibleBackgroundUrls.get(style.background);
+  const response = await fetch('/display-assets/bible-background/' + encodeURIComponent(style.background));
+  if (!response.ok) return '';
+  const result = await response.json();
+  if (typeof result.url === 'string' && result.url.startsWith('/')) bibleBackgroundUrls.set(style.background, result.url);
+  return bibleBackgroundUrls.get(style.background) || '';
+}
 async function prepareSongFont(payload) {
   if (!payload?.appearance) return;
   const { font, fontUrl } = payload.appearance;
@@ -412,6 +422,13 @@ const stageIdle = document.getElementById('stage-idle');
       targetLayer.innerHTML = html;
       const appearance = payload.appearance;
       const bibleStyle = payload.type === 'bible' ? payload.bibleStyle : null;
+      let bibleBackground = '';
+      if (bibleStyle?.background === 'solid') bibleBackground = bibleStyle.backgroundColor;
+      else if (/^(?:image-|preset-)/.test(bibleStyle?.background || '')) {
+        const url = await resolveBibleBackground(bibleStyle);
+        if (revision !== incomingRevision) return false;
+        if (url) bibleBackground = `url("${url}") center / cover no-repeat`;
+      }
       targetLayer.classList.toggle('without-text-shadow', (bibleStyle || appearance)?.textShadow === false);
       targetLayer.style.setProperty('--bible-text-color', bibleStyle?.color || '');
       targetLayer.style.setProperty('--bible-accent-color', bibleStyle?.indicatorColor || '');
@@ -422,7 +439,8 @@ const stageIdle = document.getElementById('stage-idle');
         targetLayer.style.setProperty('--song-color', payload.sectionType === 'chorus' ? appearance.chorusColor : appearance.color);
         targetLayer.style.setProperty('--song-indicator', appearance.indicatorColor);
         stageActive.style.background = appearance.background === 'solid' ? appearance.backgroundColor : `url("${appearance.backgroundUrl}") center / cover no-repeat`;
-      } else { stageActive.style.background = ''; }
+      } else if (bibleStyle) { stageActive.style.background = bibleBackground; }
+      else { stageActive.style.background = ''; }
       void targetLayer.offsetHeight;
       await document.fonts.ready;
       if (revision !== incomingRevision) return false;

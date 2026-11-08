@@ -63,11 +63,12 @@ function createHostedAccess({ origin, operatorKey, outputKey }) {
     if (reading && /^\/control(?:\.html)?\/?$/.test(pathname)) return res.redirect('/acceso.html');
     if (reading && role === 'output' && (
       ['/api/settings', '/api/lists'].includes(pathname) ||
+      /^\/display-assets\/bible-background\/(?:image-[a-f\d]{24}|preset-(?:navy|burgundy|emerald|slate))$/.test(pathname) ||
       /^\/song-assets\/(?:image|font)-[a-f\d]{24}\.(?:ttf|otf|woff2?|png|jpg|webp)$/.test(pathname) ||
       /^\/uploads\/presentations\/pres_[a-f\d-]{36}\/slide_\d+\.png$/.test(pathname) ||
       ((pathname === '/carteleria' || pathname === '/carteleria/') && req.query.tv === '1')
     )) return next();
-    if (!reading || pathname.startsWith('/api/') || pathname.startsWith('/uploads/') || pathname.startsWith('/song-assets/') ||
+    if (!reading || pathname.startsWith('/api/') || pathname.startsWith('/uploads/') || pathname.startsWith('/song-assets/') || pathname.startsWith('/display-assets/') ||
       pathname === '/carteleria' || pathname === '/carteleria/' || pathname.startsWith('/carteleria/index')) return res.sendStatus(403);
     return next();
   }

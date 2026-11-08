@@ -67,6 +67,8 @@ function validateContents(directory) {
       if (!['original', 'solid', 'transparent', 'preset-navy', 'preset-burgundy', 'preset-emerald', 'preset-slate'].includes(profile.background) &&
         !assets.some(asset => asset.kind === 'image' && asset.id === profile.background)) throw new Error('Falta un fondo de los ajustes.');
     }
+    if (/^(?:image-|preset-)/.test(settings.lyrics.bible.background) &&
+      !assets.some(asset => asset.kind === 'image' && asset.id === settings.lyrics.bible.background)) throw new Error('Falta el fondo de Biblia de los ajustes.');
     if (settings.graphics?.background && !['institutional', 'classic', 'transparent', 'preset-navy', 'preset-burgundy', 'preset-emerald', 'preset-slate'].includes(settings.graphics.background) &&
       !assets.some(asset => ['image', 'background'].includes(asset.kind) && asset.id === settings.graphics.background)) {
       throw new Error('Falta un fondo de TV de los ajustes.');
