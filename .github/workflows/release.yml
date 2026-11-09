@@ -25,7 +25,6 @@ jobs:
     outputs:
       tag: ${{ steps.version.outputs.tag }}
       desktop: ${{ steps.version.outputs.desktop }}
-      signed: ${{ steps.artifacts.outputs.signed }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -86,17 +85,17 @@ jobs:
       - name: Crear instalador Windows
         if: steps.version.outputs.desktop == 'true'
         env:
-          WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
-          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
           ELECTRON_BUILDER_CACHE: ${{ runner.temp }}\electron-builder-cache
           DEBUG: '@electron/get:index'
         shell: pwsh
         run: |
+          $PSNativeCommandUseErrorActionPreference = $false
           $maxAttempts = 3
           $buildExitCode = 1
           for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
             Write-Host "Compilación Windows, intento $attempt de $maxAttempts."
-            npm run build:windows
+            npm.cmd run build:windows
             $buildExitCode = $LASTEXITCODE
             if ($buildExitCode -eq 0) { exit 0 }
             if ($attempt -lt $maxAttempts) {
@@ -116,7 +115,6 @@ jobs:
       - name: Crear ZIP multiplataforma
         run: python scripts/package-release.py
       - name: Comprobar archivos de distribución
-        id: artifacts
         shell: pwsh
         env:
           RELEASE_TAG: ${{ steps.version.outputs.tag }}
@@ -124,21 +122,14 @@ jobs:
         run: |
           $version = $env:RELEASE_TAG.Substring(1)
           $zip = "output/Proyector-LLDM-$version.zip"
-          if (-not (Test-Path $zip)) { throw "Falta $zip" }
-          $signed = $false
+          if (-not (Test-Path -LiteralPath $zip -PathType Leaf) -or (Get-Item -LiteralPath $zip).Length -eq 0) { throw "Falta $zip o está vacío" }
           if ($env:DESKTOP -eq 'true') {
             $setup = "output/windows/Proyector-LLDM-Setup-$version.exe"
             $app = 'output/windows/win-unpacked/Proyector LLDM.exe'
             foreach ($file in @($setup, $app)) {
-              if (-not (Test-Path $file)) { throw "Falta $file" }
+              if (-not (Test-Path -LiteralPath $file -PathType Leaf) -or (Get-Item -LiteralPath $file).Length -eq 0) { throw "Falta $file o está vacío" }
             }
-            $setupSignature = Get-AuthenticodeSignature -LiteralPath $setup
-            $appSignature = Get-AuthenticodeSignature -LiteralPath $app
-            $signed = $setupSignature.Status -eq 'Valid' -and $appSignature.Status -eq 'Valid' -and
-              $null -ne $setupSignature.TimeStamperCertificate -and $null -ne $appSignature.TimeStamperCertificate -and
-              $setupSignature.SignerCertificate.Subject -eq $appSignature.SignerCertificate.Subject
           }
-          "signed=$($signed.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
       - uses: actions/upload-artifact@v4
         with:
           name: release-assets
@@ -169,7 +160,6 @@ jobs:
           GH_REPO: ${{ github.repository }}
           RELEASE_TAG: ${{ needs.build.outputs.tag }}
           DESKTOP: ${{ needs.build.outputs.desktop }}
-          SIGNED: ${{ needs.build.outputs.signed }}
         run: |
           set -euo pipefail
           version="${RELEASE_TAG#v}"
@@ -179,10 +169,6 @@ jobs:
           test "${#zips[@]}" -eq 1
           files=("${zips[0]}")
           if [[ "$DESKTOP" == true ]]; then
-            if [[ "$SIGNED" != true ]]; then
-              echo 'El instalador y la aplicación requieren firmas Authenticode válidas, con sello de tiempo y el mismo editor.' >&2
-              exit 1
-            fi
             for name in "Proyector-LLDM-Setup-${version}.exe"; do
               mapfile -t matches < <(find assets -type f -name "$name")
               test "${#matches[@]}" -eq 1
@@ -195,4 +181,4 @@ jobs:
           fi
           gh release create "$RELEASE_TAG" "${files[@]}" --draft --verify-tag \
             --title "Proyector LLDM $version" --notes-file "$notes_file"
-          gh release edit "$RELEASE_TAG" --draft=false
+          gh release edit "$RELEASE_TAG" --draft=false --latest

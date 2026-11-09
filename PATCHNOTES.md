@@ -1,6 +1,12 @@
 # Notas de cambios
 
-## Versión 1.5.1
+## Versión 1.5.2
+
+- Primera publicación estable con los cambios preparados para 1.5.1, instalador de Windows y ZIP multiplataforma.
+- La cabina comprueba la disponibilidad de versiones estables al iniciar y ofrece el instalador correspondiente. El operador decide cuándo ejecutarlo.
+- El empaquetado de Windows conserva la caché de herramientas y reintenta la compilación si falla.
+
+## Versión 1.5.1 (preparación interna)
 
 - Aplicación de escritorio para Windows con icono propio y opción para iniciar con el sistema. Incluye conversión de PDF, PPT y PPTX; no requiere instalar Python, Node.js ni LibreOffice.
 - Actualización automática con versiones estables numéricas. La cabina muestra estas notas y enlaza el instalador exacto, que conserva los datos existentes.
