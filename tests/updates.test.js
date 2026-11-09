@@ -48,7 +48,7 @@ test('Windows ofrece el EXE exacto y solo consulta metadatos', async t => {
 });
 
 test('una instalación 1.5.0 detecta el release estable 1.5.1 y presenta sus notas', async t => {
-  const notes = '## Proyector LLDM 1.5.1\n\nAjustes organizados por tareas.';
+  const notes = 'Proyector LLDM 1.5.1\n\nNovedades\n\n• Ajustes organizados por tareas.';
   const { service } = setup(t, {
     installed: true,
     fetchRelease: async url => {
@@ -65,6 +65,38 @@ test('una instalación 1.5.0 detecta el release estable 1.5.1 y presenta sus not
   assert.equal(result.latest, 'v1.5.1');
   assert.equal(result.downloadUrl, 'https://github.com/HuriTolentino/ProyectorLLDM/releases/download/v1.5.1/Proyector-LLDM-Setup-1.5.1.exe');
   assert.equal(result.patchNotes, notes);
+});
+
+test('encuentra la versión estable aunque GitHub latest apunte a una etiqueta heredada de prueba', async t => {
+  const urls = [];
+  const { service } = setup(t, {
+    installed: true,
+    fetchRelease: async url => {
+      urls.push(url);
+      if (url.endsWith('/latest')) return response({
+        tag_name: 'v1.5.0-pilot.1', prerelease: false, draft: false
+      });
+      assert.equal(url, 'https://api.github.com/repos/HuriTolentino/ProyectorLLDM/releases?per_page=100');
+      return {
+        ok: true,
+        json: async () => [
+          { tag_name: 'v1.5.1', body: 'Proyector LLDM 1.5.1\n\nNovedades', assets: [{ ...installer, name: 'Proyector-LLDM-Setup-1.5.1.exe' }] },
+          { tag_name: 'v1.9.0-beta.1', prerelease: true, assets: [] },
+          { tag_name: 'v1.5.2', draft: true, assets: [] },
+          { tag_name: 'v1.5.0-pilot.1', assets: [] }
+        ]
+      };
+    }
+  }, '1.5.0');
+  const result = await service.checkAtStartup();
+  assert.equal(result.available, true);
+  assert.equal(result.latest, 'v1.5.1');
+  assert.equal(result.downloadUrl, 'https://github.com/HuriTolentino/ProyectorLLDM/releases/download/v1.5.1/Proyector-LLDM-Setup-1.5.1.exe');
+  assert.equal(result.patchNotes, 'Proyector LLDM 1.5.1\n\nNovedades');
+  assert.deepEqual(urls, [
+    'https://api.github.com/repos/HuriTolentino/ProyectorLLDM/releases/latest',
+    'https://api.github.com/repos/HuriTolentino/ProyectorLLDM/releases?per_page=100'
+  ]);
 });
 
 test('sin instalador publicado, el aviso de Windows no ofrece un enlace roto', async t => {

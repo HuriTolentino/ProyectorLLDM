@@ -16,6 +16,15 @@ function isNewer(candidate, installed) {
   return difference !== -1 && next[difference] > current[difference];
 }
 
+function compareVersions(left, right) {
+  const a = stableVersion(left), b = stableVersion(right);
+  if (!a || !b) return 0;
+  for (let index = 0; index < 3; index++) {
+    if (a[index] !== b[index]) return a[index] - b[index];
+  }
+  return 0;
+}
+
 function createUpdateService({ rootDir, dataDir = path.join(rootDir, 'data'), fetchRelease = fetch, installed = false }) {
   const preferencesFile = path.join(dataDir, 'update-preferences.json');
   const current = JSON.parse(fs.readFileSync(path.join(rootDir, 'package.json'), 'utf8')).version;
@@ -40,16 +49,29 @@ function createUpdateService({ rootDir, dataDir = path.join(rootDir, 'data'), fe
     if (!automaticChecks) return finish('Aviso de nuevas versiones desactivado.');
     status = { current, available: false, checking: true, message: 'Buscando una versión nueva…' };
     try {
-      const response = await fetchRelease('https://api.github.com/repos/' + repository + '/releases/latest', {
+      const apiBase = 'https://api.github.com/repos/' + repository + '/releases';
+      const requestOptions = {
         headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'Proyector-LLDM' },
         signal: AbortSignal.timeout(3500), redirect: 'error'
-      });
+      };
+      const response = await fetchRelease(apiBase + '/latest', requestOptions);
       if (response.status === 404) return finish('No hay una versión pública disponible para descargar.');
       if (!response.ok) throw new Error('Consulta no disponible');
-      const release = await response.json();
+      let release = await response.json();
+      // GitHub puede marcar como latest una etiqueta antigua de prueba que el
+      // servicio debe ignorar. Busca entonces la versión estable más alta.
+      if (!stableVersion(release?.tag_name) || release.draft || release.prerelease) {
+        const listResponse = await fetchRelease(apiBase + '?per_page=100', requestOptions);
+        if (!listResponse.ok) throw new Error('Lista de versiones no disponible');
+        const releases = await listResponse.json();
+        if (!Array.isArray(releases)) throw new Error('Lista de versiones inválida');
+        release = releases
+          .filter(item => stableVersion(item?.tag_name) && !item.draft && !item.prerelease)
+          .sort((a, b) => compareVersions(b.tag_name, a.tag_name))[0];
+        if (!release) return finish('No hay una versión estable pública para descargar.');
+      }
       const tag = release.tag_name;
-      if (!stableVersion(tag)) throw new Error('Versión inválida');
-      if (release.draft || release.prerelease || !isNewer(tag, current)) return finish('Esta instalación está al día.');
+      if (!isNewer(tag, current)) return finish('Esta instalación está al día.');
       const releaseBase = 'https://github.com/' + repository + '/releases/';
       let downloadUrl = releaseBase + 'tag/' + tag;
       if (installed) {
