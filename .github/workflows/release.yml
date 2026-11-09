@@ -131,6 +131,9 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.build.outputs.tag }}
       - uses: actions/download-artifact@v4
         with:
           name: release-assets
@@ -146,6 +149,8 @@ jobs:
         run: |
           set -euo pipefail
           version="${RELEASE_TAG#v}"
+          notes_file="docs/releases/${version}.md"
+          test -s "$notes_file"
           mapfile -t zips < <(find assets -type f -name "Proyector-LLDM-${version}.zip")
           test "${#zips[@]}" -eq 1
           files=("${zips[0]}")
@@ -165,5 +170,5 @@ jobs:
             exit 1
           fi
           gh release create "$RELEASE_TAG" "${files[@]}" --draft --verify-tag \
-            --title "Proyector LLDM $version" --generate-notes
+            --title "Proyector LLDM $version" --notes-file "$notes_file"
           gh release edit "$RELEASE_TAG" --draft=false

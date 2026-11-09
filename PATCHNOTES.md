@@ -1,5 +1,13 @@
 # Notas de cambios
 
+## Versión 1.5.1
+
+- Aplicación de escritorio para Windows con icono propio y opción para iniciar con el sistema. Incluye conversión de PDF, PPT y PPTX; no requiere instalar Python, Node.js ni LibreOffice.
+- Actualización automática con versiones estables numéricas. La cabina muestra estas notas y enlaza el instalador exacto, que conserva los datos existentes.
+- Ajustes agrupados por tareas: Preparar servicio, Configurar OBS, Conectar equipos, Atajos y Avanzado.
+- Direcciones locales copiables para conectar una segunda PC, separadas del acceso QR para celulares.
+- Fondos de Biblia personalizables por estilo: predeterminado, color sólido o imagen propia.
+- Guías de usuario actualizadas con las nuevas rutas de Ajustes.
 ## Versión 1.5.0
 
 - Instalador de Windows de 64 bits en español, con la identidad de Proyector LLDM y opción para iniciar al entrar a Windows. Abre la cabina desde el menú Inicio o el archivo BAT.

@@ -5,10 +5,10 @@ const os = require('node:os');
 const path = require('node:path');
 const { createUpdateService } = require('../src/updates/service');
 
-function setup(t, options) {
+function setup(t, options, version = '1.9.0') {
   const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'proyector-release-'));
   t.after(() => fs.rmSync(rootDir, { recursive: true, force: true }));
-  fs.writeFileSync(path.join(rootDir, 'package.json'), '{"version":"1.9.0"}');
+  fs.writeFileSync(path.join(rootDir, 'package.json'), JSON.stringify({ version }));
   return { rootDir, service: createUpdateService({ rootDir, ...options }) };
 }
 
@@ -45,6 +45,26 @@ test('Windows ofrece el EXE exacto y solo consulta metadatos', async t => {
   assert.equal(result.downloadUrl, 'https://github.com/HuriTolentino/ProyectorLLDM/releases/download/v1.10.0/Proyector-LLDM-Setup-1.10.0.exe');
   assert.deepEqual(requested, ['https://api.github.com/repos/HuriTolentino/ProyectorLLDM/releases/latest']);
   assert.deepEqual(fs.readdirSync(rootDir), ['package.json']);
+});
+
+test('una instalación 1.5.0 detecta el release estable 1.5.1 y presenta sus notas', async t => {
+  const notes = '## Proyector LLDM 1.5.1\n\nAjustes organizados por tareas.';
+  const { service } = setup(t, {
+    installed: true,
+    fetchRelease: async url => {
+      assert.equal(url, 'https://api.github.com/repos/HuriTolentino/ProyectorLLDM/releases/latest');
+      return response({
+        tag_name: 'v1.5.1',
+        body: notes,
+        assets: [{ ...installer, name: 'Proyector-LLDM-Setup-1.5.1.exe' }]
+      });
+    }
+  }, '1.5.0');
+  const result = await service.checkAtStartup();
+  assert.equal(result.available, true);
+  assert.equal(result.latest, 'v1.5.1');
+  assert.equal(result.downloadUrl, 'https://github.com/HuriTolentino/ProyectorLLDM/releases/download/v1.5.1/Proyector-LLDM-Setup-1.5.1.exe');
+  assert.equal(result.patchNotes, notes);
 });
 
 test('sin instalador publicado, el aviso de Windows no ofrece un enlace roto', async t => {

@@ -29,7 +29,7 @@ test('ajustes, preparación y posición sobreviven al reinicio; los datos de igl
   settings.graphics = { ...settings.graphics, background: 'transparent', bannerTone: 'ivory', bannerPosition: 'bottom-right', logoColor: 'white', logoPosition: 'top-left', logoSize: 180, bannerDurationSeconds: 12, locationDurationSeconds: 0, animateBackground: false, animateLogo: false, showGlow: false };
   settings.lyrics.choir.lineGap = 12;
   settings.lyrics.choir.textShadow = false;
-  settings.lyrics.bible = { color: '#eeeeee', indicatorColor: '#aabbcc', textShadow: false };
+  settings.lyrics.bible = { ...settings.lyrics.bible, color: '#eeeeee', indicatorColor: '#aabbcc', textShadow: false };
   assert.equal((await send('/api/settings', { revision: initial.revision, settings }, 'PUT')).status, 200);
   assert.equal((await send('/api/settings', { revision: initial.revision, settings }, 'PUT')).status, 409);
 

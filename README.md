@@ -16,7 +16,7 @@ Desarrollado con dedicación por **Huri Tolentino**.
 
 ### Windows
 
-1. Abre [la versión piloto 1.5.0 en GitHub Releases](https://github.com/HuriTolentino/ProyectorLLDM/releases/tag/v1.5.0-pilot.1) y descarga **`Proyector-LLDM-Setup-1.5.0.exe`**. El instalador piloto no tiene firma digital y Windows puede mostrar una advertencia.
+1. Abre [Proyector LLDM 1.5.1 en GitHub Releases](https://github.com/HuriTolentino/ProyectorLLDM/releases/tag/v1.5.1) y descarga **`Proyector-LLDM-Setup-1.5.1.exe`**.
 2. Ejecuta el instalador. La opción **Iniciar Proyector LLDM al entrar a Windows** viene marcada. Puedes desmarcarla antes de instalar. Abre **Proyector LLDM** desde el acceso creado o desde el menú Inicio.
 3. La cabina se abre en una ventana de escritorio. Puedes importar PDF y presentaciones PPT/PPTX sin conexión y sin instalar Node.js, Python, PowerPoint ni LibreOffice.
 
