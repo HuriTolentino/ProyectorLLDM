@@ -444,7 +444,7 @@ La salida se adapta automáticamente a la ventana del navegador. Usa pantalla co
 
 ### 8.1 Conexión sin fricciones y código QR instantáneo
 
-En el encabezado de la cabina de escritorio se incluye el botón **Wi-Fi (QR)**. Al pulsarlo (o abrir **Ajustes → Wi-Fi**), se abre directamente el apartado de conexión inalámbrica y se genera automáticamente el código QR en pantalla. Se eliminó la visualización de direcciones IP crudas para simplificar el uso y evitar confusiones a los operadores.
+En el encabezado de la cabina de escritorio se incluye el botón **Wi-Fi (QR)**. Al pulsarlo (o abrir **Ajustes → Conectar equipos**), se abre directamente el apartado de conexión inalámbrica y se genera automáticamente el código QR en pantalla. Se eliminó la visualización de direcciones IP crudas para simplificar el uso y evitar confusiones a los operadores.
 
 ### 8.2 Pasos para enlazar el celular o tablet
 
@@ -579,7 +579,7 @@ Si OBS tiene una opción para cerrar la fuente cuando no es visible, ten en cuen
 6. Comprueba que el banner se retira.
 7. Envía una portada a TV y confirma que no cambia por sí sola el gráfico de cámara.
 
-Para repetir el ejemplo, en la cabina elige el estilo **Clásico** en **Ajustes → OBS**, guarda el cambio y pulsa **Banner en OBS** en un canto. El rótulo aparece sobre la foto en la escena de prueba.
+Para repetir el ejemplo, en la cabina elige el estilo **Clásico** en **Ajustes → Configurar OBS**, guarda el cambio y pulsa **Banner en OBS** en un canto. El rótulo aparece sobre la foto en la escena de prueba.
 
 ![El banner Clásico muestra el número y el título del canto sobre la foto de referencia en OBS.](capturas/61-obs-banner-clasico-en-escena.png)
 
@@ -728,7 +728,7 @@ Enviar la letra no reproduce una grabación musical del canto. Esta función mue
 
 ### 11.4 Cómo se distribuye la letra
 
-El programa procura mostrar letra grande y distribuir cada estrofa o coro en la menor cantidad razonable de pantallas, con un límite inicial de seis renglones por cuadro. Puedes escribir cualquier límite entero positivo en **Ajustes → Letras → Letras en las TV**, por separado para Himnario y Coro.
+El programa procura mostrar letra grande y distribuir cada estrofa o coro en la menor cantidad razonable de pantallas, con un límite inicial de seis renglones por cuadro. Puedes escribir cualquier límite entero positivo en **Ajustes → Preparar servicio → Letras en las TV**, por separado para Himnario y Coro.
 
 Los saltos internos de las líneas originales pueden redistribuirse para aprovechar el espacio. Las divisiones entre estrofas, coros y otras secciones se conservan.
 
@@ -939,7 +939,7 @@ Para practicar con varias diapositivas, usa **Juan 14:1–2**. Escribe `Juan` en
 
 ![Selector de traducción y modo, campos de cita y tarjetas del pasaje.](capturas/44-cita-con-texto-cabina.png)
 
-En TV, la referencia aparece centrada sobre el texto. Los números de versículo se resaltan y la insignia identifica las traducciones distintas de Reina Valera 1960. **Cita + Texto** sigue los tamaños de letra y el límite de renglones del Himnario en **Ajustes → Letras**. Si hace falta espacio, el pasaje se reparte entre varias diapositivas.
+En TV, la referencia aparece centrada sobre el texto. Los números de versículo se resaltan y la insignia identifica las traducciones distintas de Reina Valera 1960. **Cita + Texto** sigue los tamaños de letra y el límite de renglones del Himnario en **Ajustes → Preparar servicio → Letras en las TV**. Si hace falta espacio, el pasaje se reparte entre varias diapositivas.
 
 ![Salida a TV con la referencia centrada y el número de versículo resaltado.](capturas/45-cita-con-texto-tv.png)
 
@@ -1318,7 +1318,7 @@ La cabina organiza los gráficos en cuatro tarjetas independientes para evitar c
 1. **Ministro y Ubicación (Banner Inferior Centrado)**:
    - Permite escribir el rango y nombre del ministro (ej. `P.E. ELIAS DÍAZ`, `D.E. ...`, `E.E. ...`).
    - Se guarda de forma persistente (no se borra al reiniciar ni al pulsar **Esc** o **Fondo**).
-   - Proyecta en la parte inferior centrada el nombre del ministro y la ciudad/colonia configurada en **Ajustes → Iglesia**.
+   - Proyecta en la parte inferior centrada el nombre del ministro y la ciudad/colonia configurada en **Ajustes → Preparar servicio**.
 2. **El Coro Canta (Canto Especial)**:
    - Permite escribir el título del canto especial que entonará el coro, o dejarlo vacío para proyectar el clásico «El Coro Canta».
 3. **Ubicación y Dron (Tomas Aéreas)**:
@@ -1338,7 +1338,7 @@ En la parte inferior de la pestaña se presentan las dos salidas de video con bo
 
 Al enviar otro gráfico mientras hay uno visible, el sistema puede completar la salida anterior antes de mostrar el nuevo. No pulses repetidamente el botón solo porque la transición no termina de inmediato.
 
-La duración se configura en **Ajustes → OBS**. Los valores iniciales son **30 segundos** para banners y **75 segundos** para el cuadro de ubicación. Cada campo admite de **0 a 3600 segundos**: **0** mantiene el gráfico hasta que lo ocultes. Pulsa **Guardar ajustes** para aplicar los tiempos a los siguientes envíos. El gráfico que ya esté visible conserva su tiempo anterior. La duración de las listas se configura por separado.
+La duración se configura en **Ajustes → Configurar OBS**. Los valores iniciales son **30 segundos** para banners y **75 segundos** para el cuadro de ubicación. Cada campo admite de **0 a 3600 segundos**: **0** mantiene el gráfico hasta que lo ocultes. Pulsa **Guardar ajustes** para aplicar los tiempos a los siguientes envíos. El gráfico que ya esté visible conserva su tiempo anterior. La duración de las listas se configura por separado.
 
 Ocultar el banner no implica ocultar el logo persistente de cámara. La visibilidad del logo se cambia desde Ajustes.
 
@@ -1405,7 +1405,7 @@ La vista previa permite revisar el fondo antes de guardar. La opción afecta al 
 **Figura 35.** El selector permite revisar el fondo institucional o el del centenario antes de guardar los ajustes.
 
 
-**Duración de citas y temas en TV.** Abre **Ajustes → Fondo de TV → Duración en TV**. Cada tipo tiene su propio tiempo, con 120 segundos por defecto. Escribe 30, 45 u otro número de segundos y guarda. La duración se aplica al próximo envío. Si la cita tiene varias páginas, pasar de página no reinicia la cuenta. Puedes mostrar el fondo antes pulsando **Fondo** o **Esc**. Usa 0 si prefieres ocultar el contenido siempre a mano. Los tiempos de los banners de OBS se configuran por separado.
+**Duración de citas y temas en TV.** Abre **Ajustes → Preparar servicio → Duración en TV**. Cada tipo tiene su propio tiempo, con 120 segundos por defecto. Escribe 30, 45 u otro número de segundos y guarda. La duración se aplica al próximo envío. Si la cita tiene varias páginas, pasar de página no reinicia la cuenta. Puedes mostrar el fondo antes pulsando **Fondo** o **Esc**. Usa 0 si prefieres ocultar el contenido siempre a mano. Los tiempos de los banners de OBS se configuran por separado.
 
 ### 18.4 Diseño y colores de los banners
 
@@ -1950,7 +1950,7 @@ Una captura del error o de la ventana del programa puede ser útil. No compartas
 
 ### 20.24 No aparece una actualización
 
-Comprueba **Ajustes → Avanzado → Actualizaciones de GitHub**. Activa **Buscar versiones al iniciar el programa** y guarda la preferencia para el siguiente arranque. Si la consulta falla por falta de conexión, puedes seguir usando la versión instalada. También puedes consultar [las versiones publicadas](https://github.com/HuriTolentino/ProyectorLLDM/releases) desde el navegador.
+Comprueba **Ajustes → Avanzado → Actualizaciones del programa**. Activa **Buscar versiones al iniciar el programa** y guarda la preferencia para el siguiente arranque. Si la consulta falla por falta de conexión, puedes seguir usando la versión instalada. También puedes consultar [las versiones publicadas](https://github.com/HuriTolentino/ProyectorLLDM/releases) desde el navegador.
 
 <a id="21-rutinas-de-operacion"></a>
 

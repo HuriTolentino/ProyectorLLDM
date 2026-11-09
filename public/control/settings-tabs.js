@@ -1,10 +1,16 @@
 const tabs = [...document.querySelectorAll('[data-settings-section]')];
 const panels = [...document.querySelectorAll('[data-settings-panel]')];
 const body = document.getElementById('settingsBody');
-let current = 'church';
+let current = 'service';
+const legacySections = { church: 'service', lyrics: 'service', background: 'service', wifi: 'connect' };
+
+function normalizeSection(section) {
+  return legacySections[section] || section;
+}
 
 export function activateSettingsTab(section, focus = false) {
-  if (!tabs.some(tab => tab.dataset.settingsSection === section)) section = 'church';
+  section = normalizeSection(section);
+  if (!tabs.some(tab => tab.dataset.settingsSection === section)) section = 'service';
   current = section;
   for (const tab of tabs) {
     const selected = tab.dataset.settingsSection === section;
@@ -15,7 +21,7 @@ export function activateSettingsTab(section, focus = false) {
   for (const panel of panels) panel.hidden = panel.dataset.settingsPanel !== section;
   body.scrollTop = 0;
   try { localStorage.setItem('lldm.settings.section', section); } catch {}
-  if (section === 'wifi') {
+  if (section === 'connect') {
     window.dispatchEvent(new CustomEvent('wifi-tab-activated'));
   }
 }
@@ -34,6 +40,6 @@ for (const tab of tabs) {
 }
 
 export function openSettingsTabs() {
-  try { current = localStorage.getItem('lldm.settings.section') || 'church'; } catch {}
+  try { current = localStorage.getItem('lldm.settings.section') || 'service'; } catch {}
   activateSettingsTab(current);
 }

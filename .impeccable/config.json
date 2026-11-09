@@ -17,6 +17,15 @@
         "value": "montserrat",
         "createdAt": "2026-11-08T06:15:40.320Z",
         "reason": "Agent: Montserrat is the approved cabina typeface in DESIGN.md and is used consistently across controls."
+      },
+      {
+        "rule": "design-system-font",
+        "value": "sfmono-regular",
+        "files": [
+          "public/control/styles/song-settings.css"
+        ],
+        "createdAt": "2026-11-09T05:27:22.409Z",
+        "reason": "Agent: monospace fallback is limited to hexadecimal color values, where aligned fixed-width characters improve scanning; the UI typeface remains Montserrat."
       }
     ]
   }

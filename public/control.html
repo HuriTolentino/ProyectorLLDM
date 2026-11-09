@@ -36,7 +36,7 @@
       </div>
 
       <!-- BOTÓN WI-FI: ENLAZAR CELULAR POR QR -->
-      <button type="button" id="header-ip-badge" class="ip-badge-pill" data-open-settings="wifi" title="Conectar celular por Wi-Fi (Código QR)">
+      <button type="button" id="header-ip-badge" class="ip-badge-pill" data-open-settings="connect" title="Conectar celular por Wi-Fi (Código QR)">
         <svg class="icon-ip-svg" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
         <span class="ip-label-text">Wi-Fi (QR)</span>
         <svg class="icon-qr-svg" viewBox="0 0 24 24" style="width: 14px; height: 14px; stroke: var(--gold-lldm); fill: none; stroke-width: 2;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="14" y="18" width="7" height="3"/></svg>
@@ -424,7 +424,7 @@
           </div>
           <p class="transmission-monitor-hint">
             <svg class="icon" viewBox="0 0 24 24" style="width: 14px; height: 14px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-            <span>Los gráficos se muestran sobre fondo transparente encima de las cámaras. Se ocultan solos tras su duración (Ajustes → OBS) o manualmente con el botón «Ocultar Banner».</span>
+            <span>Los gráficos se muestran sobre fondo transparente encima de las cámaras. Se ocultan solos tras su duración (Ajustes → Configurar OBS) o manualmente con el botón «Ocultar Banner».</span>
           </p>
         </section>
 
@@ -442,7 +442,7 @@
                 </div>
               </div>
             </div>
-            <p class="module-description">Muestra el rango y nombre del ministro junto a la ubicación configurada en Ajustes → Iglesia.</p>
+            <p class="module-description">Muestra el rango y nombre del ministro junto a la ubicación configurada en Ajustes → Preparar servicio.</p>
             <div class="module-body">
               <input type="text" id="ministerInput" class="search-input" placeholder="Ej: P.E. ELIAS DÍAZ, D.E. ..., E.E. ..." autocomplete="off">
               <div class="module-actions">
@@ -935,13 +935,13 @@
       <div class="settings-header">      <div class="settings-heading"><h2 id="settingsTitle">Ajustes</h2><button type="button" id="closeSettings" class="btn-modal-close" aria-label="Cerrar ajustes">×</button></div>
       <p class="settings-credits">Proyector LLDM<br>Desarrollado por <strong>Huri Tolentino</strong></p>
 </div>
-      <nav class="settings-tabs" role="tablist" aria-label="Secciones de ajustes"><button type="button" role="tab" id="settings-tab-church" aria-controls="settings-panel-church" aria-selected="true" tabindex="0" data-settings-section="church">Iglesia</button><button type="button" role="tab" id="settings-tab-lyrics" aria-controls="settings-panel-lyrics" aria-selected="false" tabindex="-1" data-settings-section="lyrics">Letras</button><button type="button" role="tab" id="settings-tab-background" aria-controls="settings-panel-background" aria-selected="false" tabindex="-1" data-settings-section="background">Fondo de TV</button><button type="button" role="tab" id="settings-tab-obs" aria-controls="settings-panel-obs" aria-selected="false" tabindex="-1" data-settings-section="obs">OBS</button><button type="button" role="tab" id="settings-tab-keyboard" aria-controls="settings-panel-keyboard" aria-selected="false" tabindex="-1" data-settings-section="keyboard">Teclado</button><button type="button" role="tab" id="settings-tab-wifi" aria-controls="settings-panel-wifi" aria-selected="false" tabindex="-1" data-settings-section="wifi">Conexión</button><button type="button" role="tab" id="settings-tab-advanced" aria-controls="settings-panel-advanced" aria-selected="false" tabindex="-1" data-settings-section="advanced">Avanzado</button></nav>
-      <div class="settings-body" id="settingsBody"><section role="tabpanel" id="settings-panel-church" aria-labelledby="settings-tab-church" data-settings-panel="church">      <fieldset class="settings-section"><legend>Datos de la iglesia</legend>
+      <nav class="settings-tabs" role="tablist" aria-label="Tareas de ajustes"><button type="button" role="tab" id="settings-tab-service" aria-controls="settings-panel-service" aria-selected="true" tabindex="0" data-settings-section="service">Preparar servicio</button><button type="button" role="tab" id="settings-tab-obs" aria-controls="settings-panel-obs" aria-selected="false" tabindex="-1" data-settings-section="obs">Configurar OBS</button><button type="button" role="tab" id="settings-tab-connect" aria-controls="settings-panel-connect" aria-selected="false" tabindex="-1" data-settings-section="connect">Conectar equipos</button><button type="button" role="tab" id="settings-tab-keyboard" aria-controls="settings-panel-keyboard" aria-selected="false" tabindex="-1" data-settings-section="keyboard">Atajos</button><button type="button" role="tab" id="settings-tab-advanced" aria-controls="settings-panel-advanced" aria-selected="false" tabindex="-1" data-settings-section="advanced">Avanzado</button></nav>
+      <div class="settings-body" id="settingsBody"><section role="tabpanel" id="settings-panel-service" aria-labelledby="settings-tab-service" data-settings-panel="service"><fieldset class="settings-section"><legend>Datos de la iglesia</legend>
         <p class="settings-church-name">La Luz del Mundo</p>
         <label>Colonia o dirección<input id="churchAddress" name="churchAddress" type="text" maxlength="160" autocomplete="street-address"></label>
         <label>Ciudad y ubicación<input id="churchCity" name="churchCity" type="text" maxlength="160" autocomplete="address-level2"></label>
-      </fieldset></section>
-<section role="tabpanel" id="settings-panel-lyrics" aria-labelledby="settings-tab-lyrics" data-settings-panel="lyrics" hidden>      <fieldset class="settings-section" id="lyricsAppearanceSection"><legend>Letras en las TV</legend>
+      </fieldset>
+      <fieldset class="settings-section" id="lyricsAppearanceSection"><legend>Letras en las TV</legend>
         <p class="settings-note">Prepara y revisa los cuadros antes de guardar. Los ajustes de Himnario, Coro y Biblia son independientes.</p>
         <div class="lyrics-configuration"><div id="lyricsAppearanceFields" class="lyrics-options-grid"></div>
         <div id="lyricsAssetControls"><div class="song-upload-actions"><label class="song-file-button">Importar fuente<input id="songFontUpload" type="file" accept=".ttf,.otf,.woff,.woff2"></label><label class="song-file-button">Agregar fondo<input id="songBackgroundUpload" type="file" accept="image/png,image/jpeg,image/webp"></label></div>
@@ -952,8 +952,8 @@
         <div class="lyrics-preview-navigation"><button type="button" id="lyricsPreviewPrevious">Anterior</button><output id="lyricsPreviewPosition" aria-live="polite"></output><button type="button" id="lyricsPreviewNext">Siguiente</button></div>
         <p id="lyricsPreviewMessage" class="settings-message" role="status"></p>
         </div>
-      </fieldset></section>
-<section role="tabpanel" id="settings-panel-background" aria-labelledby="settings-tab-background" data-settings-panel="background" hidden>      <fieldset class="settings-section"><legend>Fondo de reposo en las TV</legend>
+      </fieldset>
+      <fieldset class="settings-section"><legend>Fondo de reposo en las TV</legend>
         <label>Diseño en reposo<select data-graphics-field="background"><option value="institutional">Institucional · logo sobre blanco</option><option value="classic">Centenario · líneas doradas (animado)</option><option value="transparent">Transparente · cámaras en TV (canto → cámaras → canto)</option></select></label>
         <div class="song-upload-actions"><label class="song-file-button">Importar fondo de reposo<input id="tvBackgroundUpload" type="file" accept=".png,.jpg,.jpeg,.webp,.gif,.svg,.mp4,.webm,.html,.htm,image/png,image/jpeg,image/webp,image/gif,image/svg+xml,video/mp4,video/webm,text/html"></label></div>
         <p class="settings-note">Importa tu propio fondo de reposo: imágenes (PNG, JPG, WebP, GIF), videos en bucle (MP4, WebM) o fondos animados vectoriales/web (SVG, HTML como el oficial). O elige «Transparente» si colocas las cámaras debajo de /pantalla en OBS para seguir el ciclo canto → cámaras → canto (máx. 32 MB).</p>
@@ -986,12 +986,12 @@
         <iframe id="settingsOverlayPreview" class="graphics-preview graphics-preview-obs" src="about:blank" title="Vista previa de los gráficos de OBS"></iframe>
         <div class="graphics-preview-actions"><button type="button" id="settingsReplayGraphic">Repetir animación</button><button type="button" id="settingsToggleGraphic">Ocultar ejemplo</button></div>
       </fieldset></section>
-<section role="tabpanel" id="settings-panel-keyboard" aria-labelledby="settings-tab-keyboard" data-settings-panel="keyboard" hidden>      <fieldset class="settings-section"><legend>Controles de teclado</legend>
+<section role="tabpanel" id="settings-panel-keyboard" aria-labelledby="settings-tab-keyboard" data-settings-panel="keyboard" hidden>      <fieldset class="settings-section"><legend>Atajos de teclado</legend>
         <p class="settings-note">Pulsa un control y después su nueva tecla. Escape siempre muestra el fondo y Ctrl+S guarda en el editor de letras.</p>
         <div id="settingsControls"></div>
         <button type="button" id="resetControls" class="btn-secondary">Restablecer controles</button>
       </fieldset></section>
-<section role="tabpanel" id="settings-panel-wifi" aria-labelledby="settings-tab-wifi" data-settings-panel="wifi" hidden>
+<section role="tabpanel" id="settings-panel-connect" aria-labelledby="settings-tab-connect" data-settings-panel="connect" hidden>
         <fieldset class="settings-section"><legend>Conectar una PC de transmisión</legend>
           <p class="settings-note">Conecta ambas computadoras a la misma red. En la PC de transmisión abre una de estas direcciones. Si Windows pregunta, permite el acceso en redes privadas:</p>
           <div class="network-output-link"><span>Pantallas / OBS</span><code id="transmissionScreenUrl">Calculando dirección…</code><button type="button" class="btn-secondary" data-copy-url="transmissionScreenUrl">Copiar</button></div>

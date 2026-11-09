@@ -59,7 +59,7 @@ Una sola familia, Montserrat, mantiene la interfaz coherente. Los títulos del d
 
 ## Layout
 
-Ajustes tiene encabezado, pestañas, contenido desplazable y pie persistente. Solo el contenido se desplaza. Seis pestañas se distribuyen en una fila en escritorio y dos filas en móvil. En Letras, configuración y vista previa comparten dos columnas cuando hay espacio; por debajo de 850 px pasan a una columna.
+Ajustes tiene encabezado, cinco pestañas organizadas por tarea, contenido desplazable y pie persistente. Solo el contenido se desplaza. En escritorio, las cinco tareas comparten una fila; en móvil se distribuyen en tres columnas y dos filas. «Preparar servicio» reúne datos de la iglesia, letras y fondo de TV. «Configurar OBS», «Conectar equipos» y «Atajos» son tareas directas; «Avanzado» mantiene respaldos, catálogos, actualizaciones e interfaz. En Letras, configuración y vista previa comparten dos columnas cuando hay espacio; por debajo de 850 px pasan a una columna.
 
 Agrupar distribución y tamaños, fuente, colores y fondo. No encerrar cada grupo en otra tarjeta. Mantener el visor real de TV y su comportamiento flotante en móvil. Conservar todos los controles de operación y sus identificadores.
 

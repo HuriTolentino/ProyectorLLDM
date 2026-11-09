@@ -74,7 +74,7 @@ export async function openSettings(targetSection) {
       openSettingsTabs();
     }
     message.textContent = ''; capture = null; renderControls(); openGraphicsSettings(draft); openSurface(dialog, () => dialog.showModal());
-    if (section === 'wifi') {
+    if (section === 'wifi' || section === 'connect') {
       window.dispatchEvent(new CustomEvent('generate-mobile-qr'));
     }
   } catch (error) { showToast(error.message); }
@@ -87,7 +87,7 @@ document.getElementById('closeSettings').addEventListener('click', closeSettings
 dialog.addEventListener('cancel', event => { event.preventDefault(); closeSettings(); });
 document.getElementById('resetControls').addEventListener('click', () => { draft.keyboard = structuredClone(snapshot.defaults.keyboard); capture = null; renderControls(); message.textContent = 'Controles originales preparados. Guarda para aplicarlos.'; });
 document.getElementById('resetAllSettings').addEventListener('click', async () => {
-  if (!draft || !confirm('¿Preparar los ajustes iniciales de iglesia, letras, fondo, OBS, teclado e interfaz? Los cantos y archivos importados se conservarán. Después debes guardar para aplicarlos.')) return;
+  if (!draft || !confirm('¿Preparar los ajustes iniciales de servicio, OBS, conexión, atajos e interfaz? Los cantos y archivos importados se conservarán. Después debes guardar para aplicarlos.')) return;
   const section = document.querySelector('[data-settings-section][aria-selected="true"]').dataset.settingsSection;
   Object.assign(draft, structuredClone(snapshot.defaults));
   renderOperatorSettings();
@@ -97,7 +97,7 @@ document.getElementById('resetAllSettings').addEventListener('click', async () =
   openGraphicsSettings(draft);
   await openLyricsAppearance(draft, snapshot.defaults);
   activateSettingsTab(section);
-  message.textContent = 'Valores iniciales preparados. Revisa las pestañas y pulsa Guardar ajustes para aplicarlos.';
+  message.textContent = 'Valores iniciales preparados. Revisa las secciones y pulsa Guardar ajustes para aplicarlos.';
 });
 dialog.addEventListener('close', () => { capture = null; closeGraphicsSettings(); closeLyricsAppearance(); closeUpdateSettings(); });
 form.addEventListener('submit', async event => {
