@@ -1,5 +1,14 @@
 # Notas de cambios
 
+## Versión 1.5.3
+
+- Personaliza el overlay de transmisión en **Ajustes → Configurar OBS**. Importa un diseño en PNG, JPG o WebP y ajusta el ancho, el alto, el encuadre, los colores y la posición del banner. Los PNG y WebP transparentes dejan ver la cámara detrás del diseño.
+- Elige una tipografía incluida o importa una fuente TTF, OTF, WOFF o WOFF2. Ajusta el tamaño y la alineación del texto.
+- Importa el logo de tu transmisión y elige su tamaño, posición, color y opacidad. También puedes ocultarlo.
+- Revisa el diseño con ejemplos en la vista previa. Al guardar, la fuente de navegador de OBS se actualiza en vivo. Los archivos del diseño se incluyen en el respaldo de Ajustes.
+- Cancelar el selector de archivos deja Ajustes abierto y conserva los cambios pendientes.
+
+
 ## Versión 1.5.2
 
 - Primera publicación estable con los cambios preparados para 1.5.1, instalador de Windows y ZIP multiplataforma.

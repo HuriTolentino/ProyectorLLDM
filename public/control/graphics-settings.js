@@ -10,6 +10,13 @@ const background = document.getElementById('settingsBackgroundPreview');
 const overlay = document.getElementById('settingsOverlayPreview');
 const sample = document.getElementById('settingsGraphicSample');
 const toggle = document.getElementById('settingsToggleGraphic');
+const uploadMessage = document.getElementById('overlayUploadMessage');
+const fieldsByName = Object.fromEntries(fields.map(field => [field.dataset.graphicsField, field]));
+const overlayAssets = {
+  bannerFont: { kind: 'font', defaultId: 'original', label: 'Según el estilo del banner' },
+  bannerImage: { kind: 'image', defaultId: 'none', label: 'Sin imagen' },
+  logoImage: { kind: 'image', defaultId: 'official', label: 'Logo oficial' }
+};
 let draft, previewVisible = true, assets = [];
 
 const builtinBackgrounds = [
@@ -38,6 +45,30 @@ function renderBackgroundOptions() {
   }
 }
 
+function renderOverlayAssetOptions() {
+  for (const [key, { kind, defaultId, label }] of Object.entries(overlayAssets)) {
+    const current = draft.graphics[key];
+    const available = assets.filter(asset => asset.kind === kind && !asset.id.startsWith('preset-'));
+    const options = [[defaultId, label], ...available.map(asset => [asset.id, asset.name])];
+    if (!options.some(([id]) => id === current)) options.push([current, 'Archivo seleccionado']);
+    fieldsByName[key].innerHTML = options.map(([id, name]) => option(id, name, current)).join('');
+  }
+}
+
+function updateEnabledFields() {
+  const custom = draft.graphics.bannerStyle === 'custom';
+  fieldsByName.bannerTone.disabled = draft.graphics.bannerStyle !== 'angular';
+  fieldsByName.bannerImageFit.disabled = !custom || draft.graphics.bannerImage === 'none';
+  fieldsByName.bannerColor.disabled = !custom || draft.graphics.bannerImage !== 'none';
+  fieldsByName.bannerTextColor.disabled = !custom;
+  fieldsByName.bannerWidth.setCustomValidity(
+    fieldsByName.bannerWidth.valueAsNumber > 0 && fieldsByName.bannerWidth.valueAsNumber < 240 ? 'Usa 0 o un ancho de al menos 240 px.' : '');
+  fieldsByName.bannerHeight.setCustomValidity(
+    fieldsByName.bannerHeight.valueAsNumber > 0 && fieldsByName.bannerHeight.valueAsNumber < 80 ? 'Usa 0 o un alto de al menos 80 px.' : '');
+  fieldsByName.logoColor.options[0].textContent = draft.graphics.logoImage === 'official' ? 'Dorado oficial' : 'Colores originales';
+  animateBackgroundCheckbox.disabled = draft.graphics.background !== 'classic';
+}
+
 function graphicSample() {
   const church = draft.church;
   return {
@@ -59,14 +90,44 @@ function updatePreview(includeSample = false) {
 }
 fields.forEach(field => field.addEventListener('input', () => {
   if (!draft) return;
-  draft.graphics[field.dataset.graphicsField] = field.type === 'checkbox' ? field.checked
+  const key = field.dataset.graphicsField;
+  draft.graphics[key] = field.type === 'checkbox' ? field.checked
     : ['range', 'number'].includes(field.type) ? (field.value === '' ? null : Number(field.value)) : field.value;
-  document.querySelector('[data-graphics-field="bannerTone"]').disabled = draft.graphics.bannerStyle === 'classic';
-  if (animateBackgroundCheckbox) {
-    animateBackgroundCheckbox.disabled = draft.graphics.background !== 'classic';
+  if (key === 'bannerImage' && field.value !== 'none') {
+    fieldsByName.bannerStyle.value = draft.graphics.bannerStyle = 'custom';
   }
+  updateEnabledFields();
   updatePreview();
 }));
+for (const input of document.querySelectorAll('[data-overlay-upload]')) {
+  input.addEventListener('change', async () => {
+    const file = input.files[0];
+    if (!file || !draft) return;
+    const targetDraft = draft;
+    const key = input.dataset.overlayUpload;
+    const data = new FormData();
+    data.append('file', file);
+    input.disabled = true;
+    uploadMessage.textContent = 'Importando archivo…';
+    try {
+      const asset = await (await request('/api/song-assets/' + overlayAssets[key].kind, { method: 'POST', body: data })).json();
+      if (draft !== targetDraft) return;
+      if (!assets.some(item => item.id === asset.id)) assets.push(asset);
+      draft.graphics[key] = asset.id;
+      if (key === 'bannerImage') fieldsByName.bannerStyle.value = draft.graphics.bannerStyle = 'custom';
+      if (key === 'logoImage') fieldsByName.logoColor.value = draft.graphics.logoColor = 'official';
+      renderOverlayAssetOptions();
+      updateEnabledFields();
+      updatePreview();
+      uploadMessage.textContent = `«${asset.name}» importado. Guarda los ajustes para aplicarlo al overlay.`;
+    } catch (error) {
+      if (draft === targetDraft) uploadMessage.textContent = error.message;
+    } finally {
+      input.disabled = false;
+      input.value = '';
+    }
+  });
+}
 if (backgroundUpload) {
   backgroundUpload.addEventListener('change', async event => {
     const input = event.target;
@@ -109,6 +170,7 @@ export async function openGraphicsSettings(settings) {
   if (!settings?.graphics) throw new Error('Reinicia el servidor de Proyector LLDM y recarga la página para activar los ajustes de gráficos.');
   draft = settings;
   previewVisible = true; toggle.textContent = 'Ocultar ejemplo';
+  uploadMessage.textContent = '';
   if (backgroundMessage) backgroundMessage.textContent = '';
   try {
     assets = await (await request('/api/song-assets')).json();
@@ -117,20 +179,19 @@ export async function openGraphicsSettings(settings) {
   }
   if (draft !== settings) return;
   renderBackgroundOptions();
+  renderOverlayAssetOptions();
   fields.forEach(field => {
     const value = draft.graphics[field.dataset.graphicsField];
     if (field.type === 'checkbox') field.checked = value !== false;
     else field.value = value;
   });
-  document.querySelector('[data-graphics-field="bannerTone"]').disabled = draft.graphics.bannerStyle === 'classic';
-  if (animateBackgroundCheckbox) {
-    animateBackgroundCheckbox.disabled = draft.graphics.background !== 'classic';
-  }
+  updateEnabledFields();
   background.src = '/idle.html?appearancePreview=1';
   overlay.src = '/overlay?obs=1&appearancePreview=1';
 }
 export function closeGraphicsSettings() {
   draft = null;
+  uploadMessage.textContent = '';
   if (backgroundMessage) backgroundMessage.textContent = '';
   background.src = overlay.src = 'about:blank';
 }

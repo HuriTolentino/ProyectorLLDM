@@ -970,17 +970,35 @@
         </div>
         <p class="settings-note">Al vencer el tiempo se muestra el fondo. Usa 0 para quitar el contenido solo manualmente. Los cambios se aplican a los siguientes envíos.</p>
       </fieldset></section>
-<section role="tabpanel" id="settings-panel-obs" aria-labelledby="settings-tab-obs" data-settings-panel="obs" hidden>      <fieldset class="settings-section"><legend>Gráficos de OBS</legend>
+<section role="tabpanel" id="settings-panel-obs" aria-labelledby="settings-tab-obs" data-settings-panel="obs" hidden>      <fieldset class="settings-section"><legend>Diseño del overlay de OBS</legend>
         <div class="graphics-options">
-          <label>Banner<select data-graphics-field="bannerStyle"><option value="angular">Paneles angulares</option><option value="classic">Clásico</option></select></label>
+          <label>Estilo del banner<select data-graphics-field="bannerStyle"><option value="angular">Paneles angulares</option><option value="classic">Clásico</option><option value="custom">Personalizado</option></select></label>
           <label>Color del banner<select data-graphics-field="bannerTone"><option value="navy">Azul noche y oro</option><option value="ivory">Marfil y oro</option><option value="burgundy">Borgoña y oro</option></select></label>
           <label>Posición del banner<select data-graphics-field="bannerPosition"><option value="top-right">Arriba a la derecha</option><option value="top-left">Arriba a la izquierda</option><option value="bottom-right">Abajo a la derecha</option><option value="bottom-left">Abajo a la izquierda</option></select></label>
+          <label>Fuente del texto<select data-graphics-field="bannerFont"></select></label>
+          <label>Importar fuente (TTF, OTF, WOFF o WOFF2)<input type="file" data-overlay-upload="bannerFont" accept=".ttf,.otf,.woff,.woff2"></label>
+          <label>Tamaño del texto (%)<input data-graphics-field="bannerTextScale" type="number" min="60" max="200" required></label>
+          <label>Alineación del texto<select data-graphics-field="bannerTextAlign"><option value="original">Según el tipo de banner</option><option value="left">Izquierda</option><option value="center">Centro</option><option value="right">Derecha</option></select></label>
+          <label>Ancho del banner (px)<input data-graphics-field="bannerWidth" type="number" min="0" max="1800" required></label>
+          <label>Alto del banner (px)<input data-graphics-field="bannerHeight" type="number" min="0" max="500" required></label>
+          <label>Fondo del diseño<select data-graphics-field="bannerImage"></select></label>
+          <label>Importar diseño (PNG, JPG o WebP)<input type="file" data-overlay-upload="bannerImage" accept="image/png,image/jpeg,image/webp"></label>
+          <label>Ajuste de la imagen<select data-graphics-field="bannerImageFit"><option value="stretch">Ajustar al ancho y alto</option><option value="cover">Rellenar y recortar</option><option value="contain">Mostrar imagen completa</option></select></label>
+          <label>Color de fondo personalizado<input data-graphics-field="bannerColor" type="color"></label>
+          <label>Color de texto personalizado<input data-graphics-field="bannerTextColor" type="color"></label>
+        </div>
+        <p class="settings-note">Usa 0 para el tamaño automático. En un lienzo de 1920 × 1080, el ancho admite 240–1800 px y el alto 80–500 px. Para ver las cámaras a través del diseño, importa un PNG o WebP con transparencia.</p>
+        <div class="graphics-options">
+          <label>Imagen del logo<select data-graphics-field="logoImage"></select></label>
+          <label>Importar logo (PNG, JPG o WebP)<input type="file" data-overlay-upload="logoImage" accept="image/png,image/jpeg,image/webp"></label>
           <label>Color del logo<select data-graphics-field="logoColor"><option value="official">Dorado oficial</option><option value="gold">Oro luminoso</option><option value="white">Blanco</option><option value="navy">Azul marino</option><option value="silver">Plata</option></select></label>
           <label>Posición del logo<select data-graphics-field="logoPosition"><option value="bottom-left">Abajo a la izquierda</option><option value="bottom-right">Abajo a la derecha</option><option value="top-left">Arriba a la izquierda</option><option value="top-right">Arriba a la derecha</option><option value="hidden">Oculto</option></select></label>
-          <label>Tamaño del logo<input data-graphics-field="logoSize" type="range" min="120" max="300" step="5"></label>
+          <label>Tamaño del logo (px)<input data-graphics-field="logoSize" type="number" min="40" max="450" required></label>
+          <label>Opacidad del logo (%)<input data-graphics-field="logoOpacity" type="number" min="0" max="100" required></label>
           <label>Duración de banners (segundos)<input data-graphics-field="bannerDurationSeconds" type="number" min="0" max="3600" step="1" inputmode="numeric" required></label>
           <label>Duración de ubicación (segundos)<input data-graphics-field="locationDurationSeconds" type="number" min="0" max="3600" step="1" inputmode="numeric" required></label>
         </div>
+        <p id="overlayUploadMessage" class="settings-note" role="status"></p>
         <p class="settings-note">Usa 0 para mantener el gráfico hasta ocultarlo manualmente. Guarda para aplicar la duración a los siguientes envíos. Los ejemplos de esta ventana permanecen visibles para revisar su diseño.</p>
         <label>Previsualizar<select id="settingsGraphicSample"><option value="bible">Cita bíblica</option><option value="theme">Tema</option><option value="choir">Coro</option><option value="special">Carta apostólica</option><option value="drone">Ubicación</option><option value="minister">Ministro y ubicación</option></select></label>
         <iframe id="settingsOverlayPreview" class="graphics-preview graphics-preview-obs" src="about:blank" title="Vista previa de los gráficos de OBS"></iframe>

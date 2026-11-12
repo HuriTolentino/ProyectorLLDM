@@ -84,7 +84,11 @@ document.querySelectorAll('[data-open-settings]').forEach(button => button.addEv
 }));
 export function closeSettings() { closeSurface(dialog, () => dialog.close()); }
 document.getElementById('closeSettings').addEventListener('click', closeSettings);
-dialog.addEventListener('cancel', event => { event.preventDefault(); closeSettings(); });
+dialog.addEventListener('cancel', event => {
+  if (event.target !== dialog) return;
+  event.preventDefault();
+  closeSettings();
+});
 document.getElementById('resetControls').addEventListener('click', () => { draft.keyboard = structuredClone(snapshot.defaults.keyboard); capture = null; renderControls(); message.textContent = 'Controles originales preparados. Guarda para aplicarlos.'; });
 document.getElementById('resetAllSettings').addEventListener('click', async () => {
   if (!draft || !confirm('¿Preparar los ajustes iniciales de servicio, OBS, conexión, atajos e interfaz? Los cantos y archivos importados se conservarán. Después debes guardar para aplicarlos.')) return;

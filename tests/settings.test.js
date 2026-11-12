@@ -41,8 +41,26 @@ test('ajustes, preparación y posición sobreviven al reinicio; los datos de igl
   assert.match(uploadedBg.id, /^bg-html-[a-f0-9]{24}$/);
   assert.equal((await fetch(base + '/song-assets/' + uploadedBg.id)).status, 200);
 
+  const overlayAsset = async (kind, file, name) => {
+    const data = new FormData();
+    data.append('file', new Blob([file]), name);
+    const response = await fetch(base + '/api/song-assets/' + kind, { method: 'POST', body: data });
+    assert.equal(response.status, 200);
+    const asset = await response.json();
+    assert.equal((await fetch(base + '/song-assets/' + asset.id)).status, 200);
+    return asset.id;
+  };
+  const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jgFsAAAAASUVORK5CYII=', 'base64');
+  const image = await overlayAsset('image', png, 'diseno.png');
+  const font = await overlayAsset('font', fs.readFileSync(path.join(__dirname, '../public/fonts/Inter.woff2')), 'fuente.woff2');
   settings.graphics.background = uploadedBg.id;
+  Object.assign(settings.graphics, {
+    bannerStyle: 'custom', bannerImage: image, bannerFont: font, bannerWidth: 900, bannerHeight: 145,
+    bannerImageFit: 'cover', bannerTextScale: 130, bannerTextAlign: 'center',
+    bannerTextColor: '#fafafa', logoImage: image, logoOpacity: 70
+  });
   assert.equal((await send('/api/settings', { revision: 1, settings }, 'PUT')).status, 200);
+  assert.deepEqual((await get('/api/state')).settings.graphics, settings.graphics);
 
   const renamed = structuredClone(settings); renamed.church.name = 'Otro nombre';
   assert.equal((await send('/api/settings', { revision: 2, settings: renamed }, 'PUT')).status, 400);
@@ -52,6 +70,11 @@ test('ajustes, preparación y posición sobreviven al reinicio; los datos de igl
   }
   for (const value of [-1, 3601, 1.5, null, '30']) {
     assert.equal((await send('/api/settings', { revision: 2, settings: { ...settings, graphics: { ...settings.graphics, bannerDurationSeconds: value } } }, 'PUT')).status, 400);
+  }
+  for (const change of [{ bannerWidth: 239 }, { bannerHeight: 501 }, { bannerTextScale: 201 },
+    { bannerImage: uploadedBg.id }, { logoImage: 'image-' + '0'.repeat(24) }, { bannerFont: image }, { bannerTextColor: 'red' }]) {
+    const graphics = { ...settings.graphics, ...change };
+    assert.equal((await send('/api/settings', { revision: 2, settings: { ...settings, graphics } }, 'PUT')).status, 400);
   }
   const invalid = structuredClone(settings); invalid.keyboard.previousSlide = ['KeyN'];
   assert.equal((await send('/api/settings', { revision: 2, settings: invalid }, 'PUT')).status, 400);

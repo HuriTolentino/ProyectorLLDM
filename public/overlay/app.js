@@ -34,9 +34,56 @@ const ministerBanner = document.getElementById('ministerBanner');
 const ministerBody = document.getElementById('ministerBody');
 const ministerNameText = document.getElementById('ministerNameText');
 const ministerLocationText = document.getElementById('ministerLocationText');
+const droneCard = droneWrapper.querySelector('.drone-card');
+const logoImage = streamLogoBox.querySelector('.logo-img');
 const logoTint = document.createElement('span');
 logoTint.className = 'logo-tint';
 streamLogoBox.appendChild(logoTint);
+
+const builtinFonts = { montserrat: 'Montserrat', inter: 'Inter', outfit: 'Outfit', playfair: 'Playfair Display' };
+const assetUrl = id => '/song-assets/' + encodeURIComponent(id);
+let fontId, loadedFont;
+
+function fitGraphic(body, maxHeight) {
+    const scale = graphicDurations.bannerTextScale || 100;
+    const height = graphicDurations.bannerHeight;
+    const cardStyle = height && body !== droneCard ? getComputedStyle(body.parentElement) : null;
+    const padding = cardStyle ? parseFloat(cardStyle.paddingBlockStart) + parseFloat(cardStyle.paddingBlockEnd) : 0;
+    window.LldmOverlayLayout.fit(body, height ? height - padding / window.OutputViewport.scale() : maxHeight, scale / 100);
+}
+
+function refitGraphics() {
+    for (const [body, height] of [[bannerBody, 130], [droneCard, 220], [ministerBody, 150]]) {
+        if (!body) continue;
+        window.LldmOverlayLayout.reset(body);
+        fitGraphic(body, height);
+    }
+}
+
+function applyBannerFont(root, id) {
+    if (fontId === id) return;
+    fontId = id;
+    if (loadedFont) document.fonts.delete(loadedFont);
+    loadedFont = null;
+    root.style.removeProperty('--obs-font');
+    delete root.dataset.bannerFont;
+    if (Object.hasOwn(builtinFonts, id)) {
+        root.dataset.bannerFont = id;
+        root.style.setProperty('--obs-font', `"${builtinFonts[id]}", sans-serif`);
+        document.fonts.load(`700 16px "${builtinFonts[id]}"`).then(refitGraphics).catch(console.error);
+    } else if (id?.startsWith('font-')) {
+        const font = new FontFace('OBS Imported', `url("${assetUrl(id)}")`);
+        font.load().then(() => {
+            if (fontId !== id) return;
+            loadedFont = font;
+            document.fonts.add(font);
+            root.dataset.bannerFont = id;
+            root.style.setProperty('--obs-font', '"OBS Imported", sans-serif');
+            refitGraphics();
+        }).catch(console.error);
+    }
+}
+
 window.addEventListener('graphics-changed', event => {
     const graphics = event.detail;
     graphicDurations = graphics;
@@ -44,7 +91,27 @@ window.addEventListener('graphics-changed', event => {
     root.dataset.bannerStyle = graphics.bannerStyle;
     root.dataset.bannerTone = graphics.bannerTone;
     root.dataset.logoColor = graphics.logoColor;
+    root.dataset.bannerTextAlign = graphics.bannerTextAlign || 'original';
+    root.toggleAttribute('data-banner-fixed-width', Boolean(graphics.bannerWidth));
+    const bannerImage = graphics.bannerImage?.startsWith('image-') ? `url("${assetUrl(graphics.bannerImage)}")` : 'none';
+    const logoUrl = graphics.logoImage?.startsWith('image-') ? assetUrl(graphics.logoImage) : '/logo_lldm_oficial.svg';
+    const dimensions = { '--obs-banner-width': graphics.bannerWidth, '--obs-banner-height': graphics.bannerHeight };
+    for (const [key, value] of Object.entries(dimensions)) {
+        if (value) root.style.setProperty(key, outputLength(value));
+        else root.style.removeProperty(key);
+    }
+    root.style.setProperty('--obs-banner-image', bannerImage);
+    root.style.setProperty('--obs-banner-image-size', graphics.bannerImageFit === 'stretch' ? '100% 100%' : graphics.bannerImageFit || '100% 100%');
+    root.style.setProperty('--obs-banner-color', bannerImage === 'none' ? graphics.bannerColor : 'transparent');
+    root.style.setProperty('--obs-banner-text-color', graphics.bannerTextColor);
+    root.style.setProperty('--obs-logo-image', `url("${logoUrl}")`);
     root.style.setProperty('--obs-logo-size', outputLength(graphics.logoSize));
+    root.style.setProperty('--obs-logo-opacity', (graphics.logoOpacity ?? 100) / 100);
+    if (logoImage.getAttribute('src') !== logoUrl) {
+        logoImage.src = logoUrl;
+        logoImage.alt = graphics.logoImage === 'official' ? 'Logo Oficial La Luz del Mundo' : 'Logo de la transmisión';
+    }
+    applyBannerFont(root, graphics.bannerFont);
     cambiarPosicion(`pos-${graphics.bannerPosition}`);
     cambiarPosicionLogo(graphics.logoPosition === 'hidden' ? 'hidden' : `watermark-${graphics.logoPosition}`);
     overlayContainer.style.paddingLeft = '';
@@ -52,14 +119,7 @@ window.addEventListener('graphics-changed', event => {
     if (graphics.logoPosition === graphics.bannerPosition) {
         overlayContainer.style[graphics.logoPosition.endsWith('left') ? 'paddingLeft' : 'paddingRight'] = outputLength(graphics.logoSize + 90);
     }
-    window.LldmOverlayLayout.reset(bannerBody);
-    window.LldmOverlayLayout.reset(droneWrapper.querySelector('.drone-card'));
-    window.LldmOverlayLayout.fit(bannerBody, 130);
-    window.LldmOverlayLayout.fit(droneWrapper.querySelector('.drone-card'), 220);
-    if (ministerBody) {
-        window.LldmOverlayLayout.reset(ministerBody);
-        window.LldmOverlayLayout.fit(ministerBody, 150);
-    }
+    refitGraphics();
 });
 
 if (window.obsstudio || window.location.search.includes('obs=1')) {
@@ -268,8 +328,8 @@ function desplegarGrafico(data) {
         ministerLocationText.textContent = preventShortWidows(locText);
         ministerLocationText.style.display = locText ? '' : 'none';
 
-        window.LldmOverlayLayout.fit(ministerBody, 150);
-        document.fonts.ready.then(() => window.LldmOverlayLayout.fit(ministerBody, 150));
+        fitGraphic(ministerBody, 150);
+        document.fonts.ready.then(() => fitGraphic(ministerBody, 150));
         ministerBanner.classList.remove('exiting', 'active');
         void ministerBanner.offsetWidth;
 
@@ -292,8 +352,8 @@ function desplegarGrafico(data) {
         const tagText = data.tag || "LA LUZ DEL MUNDO";
         droneHeaderTag.textContent = tagText;
         droneMainText.textContent = preventShortWidows(locText);
-        window.LldmOverlayLayout.fit(droneWrapper.querySelector('.drone-card'), 220);
-        document.fonts.ready.then(() => window.LldmOverlayLayout.fit(droneWrapper.querySelector('.drone-card'), 220));
+        fitGraphic(droneCard, 220);
+        document.fonts.ready.then(() => fitGraphic(droneCard, 220));
         droneWrapper.classList.remove('exiting', 'active');
         void droneWrapper.offsetWidth;
 
@@ -470,8 +530,8 @@ function desplegarGrafico(data) {
         }
     }
 
-    window.LldmOverlayLayout.fit(bannerBody, 130);
-    document.fonts.ready.then(() => window.LldmOverlayLayout.fit(bannerBody, 130));
+    fitGraphic(bannerBody, 130);
+    document.fonts.ready.then(() => fitGraphic(bannerBody, 130));
 
     // Entrada completa desde cero con animación a 60 FPS
     bannerWrapper.classList.remove('exiting', 'active');

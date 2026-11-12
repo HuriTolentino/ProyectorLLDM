@@ -125,6 +125,41 @@ body { font-family: 'Montserrat', 'Segoe UI', sans-serif; }
 [data-logo-color="navy"] { --obs-logo-tint: #101f3b; }
 [data-logo-color="silver"] { --obs-logo-tint: linear-gradient(120deg,#8997ab,#f4f8ff 48%,#a5b1c2); }
 .test-panel { max-width: calc(100% - 2rem); width: max-content; flex-wrap: wrap; max-height: 40dvh; overflow: auto; }
+
+:root .banner-wrapper { width: var(--obs-banner-width, auto); height: var(--obs-banner-height, auto); }
+:root .drone-wrapper, :root .minister-wrapper { width: var(--obs-banner-width, max-content); }
+:root .drone-card { width: var(--obs-banner-width, auto); height: var(--obs-banner-height, auto); }
+:root[data-banner-fixed-width] :is(.banner-wrapper, .banner-content, .drone-wrapper, .drone-card, .minister-wrapper) { max-width: 100%; }
+:root[data-banner-fixed-width] :is(.banner-content, .drone-card) { flex: 1 1 auto; }
+[data-banner-style="custom"] :is(.badge-bar, .shimmer-sweep) { display: none; }
+[data-banner-style="custom"] :is(.banner-content, .drone-card) {
+  background: var(--obs-banner-color, #101e36) var(--obs-banner-image, none) center / var(--obs-banner-image-size, 100% 100%) no-repeat;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: .75rem 1.5rem;
+}
+[data-banner-style="custom"] .banner-wrapper { filter: none; }
+[data-banner-style="custom"] :is(.main-title, .hymn-num, .hymn-title, .bible-book, .bible-verse, .category-tag, .sub-detail, .drone-tag, .drone-title, .minister-name, .minister-location) {
+  color: var(--obs-banner-text-color, #fff);
+}
+[data-banner-style="custom"] .drone-pin-icon { fill: var(--obs-banner-text-color, #fff); }
+[data-banner-font] :is(.main-title, .hymn-num, .hymn-title, .bible-book, .bible-verse, .category-tag, .sub-detail, .drone-tag, .drone-title, .minister-name, .minister-location) {
+  font-family: var(--obs-font);
+}
+[data-banner-text-align="left"] { --obs-text-align: left; --obs-text-edge: flex-start; }
+[data-banner-text-align="center"] { --obs-text-align: center; --obs-text-edge: center; }
+[data-banner-text-align="right"] { --obs-text-align: right; --obs-text-edge: flex-end; }
+[data-banner-text-align]:not([data-banner-text-align="original"]) :is(#bannerBody, #ministerBody, .drone-card) {
+  align-items: var(--obs-text-edge);
+  text-align: var(--obs-text-align);
+}
+[data-banner-text-align]:not([data-banner-text-align="original"]) :is(.main-title, .hymn-title, .bible-book, .sub-detail, .drone-title) {
+  text-align: var(--obs-text-align);
+}
+.broadcast-watermark { opacity: var(--obs-logo-opacity, 1); }
+.logo-tint, .logo-shimmer-overlay { mask-image: var(--obs-logo-image, url('/logo_lldm_oficial.svg')); }
+
 @media (prefers-reduced-motion: reduce) {
   .broadcast-watermark { transition: none; }
   .shimmer-sweep, .logo-shimmer-overlay, .logo-star-sparkle { display: none; }

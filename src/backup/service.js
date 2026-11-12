@@ -73,6 +73,15 @@ function validateContents(directory) {
       !assets.some(asset => ['image', 'background'].includes(asset.kind) && asset.id === settings.graphics.background)) {
       throw new Error('Falta un fondo de TV de los ajustes.');
     }
+    for (const [id, kind, prefix] of [
+      [settings.graphics.bannerFont, 'font', 'font-'],
+      [settings.graphics.bannerImage, 'image', 'image-'],
+      [settings.graphics.logoImage, 'image', 'image-']
+    ]) {
+      if (id.startsWith(prefix) && !assets.some(asset => asset.kind === kind && asset.id === id)) {
+        throw new Error('Falta un archivo del diseño del overlay en el respaldo.');
+      }
+    }
   }
   if (has('lista-oraciones.json')) {
     const snapshot = json('lista-oraciones.json');

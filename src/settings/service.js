@@ -16,6 +16,9 @@ const graphicsDefaults = {
   background: 'institutional', bannerStyle: 'angular', bannerTone: 'navy',
   animateBackground: true, animateLogo: true, showGlow: true,
   bannerPosition: 'top-right', logoColor: 'official', logoPosition: 'bottom-left', logoSize: 215,
+  bannerImage: 'none', bannerImageFit: 'stretch', bannerColor: '#101e36', bannerTextColor: '#ffffff',
+  bannerFont: 'original', bannerTextScale: 100, bannerWidth: 0, bannerHeight: 0, bannerTextAlign: 'original',
+  logoImage: 'official', logoOpacity: 100,
   bannerDurationSeconds: 30, locationDurationSeconds: 75,
   bibleDurationSeconds: 120, themeDurationSeconds: 120
 };
@@ -30,16 +33,13 @@ function validate(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).some(key => !['church', 'keyboard', 'graphics', 'lyrics', 'operator'].includes(key))) throw new Error('Ajustes no válidos.');
   const operator = value.operator ?? structuredClone(defaults.operator);
   if (!operator || typeof operator !== 'object' || Array.isArray(operator) || Object.keys(operator).some(key => key !== 'showLyricsEditor') || typeof operator.showLyricsEditor !== 'boolean') throw new Error('Opciones de interfaz no válidas.');
-  const graphics = value.graphics == null ? structuredClone(graphicsDefaults) : {
-    bannerDurationSeconds: graphicsDefaults.bannerDurationSeconds,
-    locationDurationSeconds: graphicsDefaults.locationDurationSeconds,
-    bibleDurationSeconds: graphicsDefaults.bibleDurationSeconds,
-    themeDurationSeconds: graphicsDefaults.themeDurationSeconds,
-    animateBackground: true, animateLogo: true, showGlow: true, ...value.graphics
-  };
+  if (value.graphics != null && (typeof value.graphics !== 'object' || Array.isArray(value.graphics))) throw new Error('Opciones de gráficos no válidas.');
+  const graphics = { ...graphicsDefaults, ...value.graphics };
   const choices = {
-    bannerStyle: ['angular', 'classic'],
+    bannerStyle: ['angular', 'classic', 'custom'],
     bannerTone: ['navy', 'ivory', 'burgundy'], bannerPosition: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
+    bannerImageFit: ['stretch', 'cover', 'contain'],
+    bannerTextAlign: ['original', 'left', 'center', 'right'],
     logoColor: ['official', 'gold', 'white', 'navy', 'silver'],
     logoPosition: ['top-left', 'top-right', 'bottom-left', 'bottom-right', 'hidden']
   };
@@ -50,7 +50,17 @@ function validate(value) {
       !validTvBackground ||
       Object.entries(choices).some(([key, values]) => !values.includes(graphics[key])) ||
       ['animateBackground', 'animateLogo', 'showGlow'].some(key => typeof graphics[key] !== 'boolean') ||
-      !Number.isInteger(graphics.logoSize) || graphics.logoSize < 120 || graphics.logoSize > 300) throw new Error('Opciones de gráficos no válidas.');
+      !Number.isInteger(graphics.logoSize) || graphics.logoSize < 40 || graphics.logoSize > 450) throw new Error('Opciones de gráficos no válidas.');
+  const imageId = /^image-[a-f0-9]{24}$/;
+  const inRange = (value, min, max) => Number.isInteger(value) && value >= min && value <= max;
+  if (!['original', 'montserrat', 'inter', 'outfit', 'playfair'].includes(graphics.bannerFont) &&
+      !(typeof graphics.bannerFont === 'string' && /^font-[a-f0-9]{24}$/.test(graphics.bannerFont)) ||
+      !['bannerColor', 'bannerTextColor'].every(key => typeof graphics[key] === 'string' && /^#[a-f0-9]{6}$/i.test(graphics[key])) ||
+      !(graphics.bannerImage === 'none' || (typeof graphics.bannerImage === 'string' && imageId.test(graphics.bannerImage))) ||
+      !(graphics.logoImage === 'official' || (typeof graphics.logoImage === 'string' && imageId.test(graphics.logoImage))) ||
+      !inRange(graphics.bannerTextScale, 60, 200) || !inRange(graphics.logoOpacity, 0, 100) ||
+      !(graphics.bannerWidth === 0 || inRange(graphics.bannerWidth, 240, 1800)) ||
+      !(graphics.bannerHeight === 0 || inRange(graphics.bannerHeight, 80, 500))) throw new Error('Diseño del overlay no válido.');
   for (const key of ['bannerDurationSeconds', 'locationDurationSeconds']) {
     if (!Number.isInteger(graphics[key]) || graphics[key] < 0 || graphics[key] > 3600) throw new Error('La duración de OBS debe ser un número entero de 0 a 3600 segundos. Usa 0 para ocultar manualmente.');
   }

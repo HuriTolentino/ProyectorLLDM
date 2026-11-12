@@ -73,6 +73,12 @@ function createSongAssets({ app, dataDir }) {
     if (graphics && !['institutional', 'classic', 'transparent'].includes(graphics.background)) {
       if (!find(graphics.background, 'background')) throw new Error('El fondo de TV seleccionado no está disponible.');
     }
+    if (graphics?.bannerFont !== undefined && graphics.bannerFont !== 'original' && !find(graphics.bannerFont, 'font')) {
+      throw new Error('La fuente del overlay no está disponible.');
+    }
+    for (const id of [graphics?.bannerImage, graphics?.logoImage]) {
+      if (id && id !== 'none' && id !== 'official' && !find(id, 'image')) throw new Error('La imagen del overlay no está disponible.');
+    }
   }
   app.get('/api/song-assets', (req, res) => res.json(all().map(({ file, filename, ...asset }) => asset)));
   app.get('/display-assets/bible-background/:id', (req, res) => {
